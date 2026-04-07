@@ -104,18 +104,17 @@ function handleCSV(input){
 }
 
 /* ── ANALYSIS ENGINE (Python logic ported to JS) ── */
-function analyzeExpenses(){
-  const rows = expenses.filter(e=>e.desc && e.amt>0);
-  if(rows.length<2){ showToast('Add at least 2 expenses!'); return; }
-
-  document.getElementById('loadingOverlay').classList.add('active');
-
-  setTimeout(()=>{
-    const result = runLeakDetector(rows);
-    renderResults(result);
-    document.getElementById('loadingOverlay').classList.remove('active');
-    document.getElementById('results').scrollIntoView({behavior:'smooth'});
-  }, 1800);
+async function analyzeExpenses() {
+  const rows = expenses.filter(e => e.desc && e.amt > 0);
+  const res = await fetch("http://localhost:5000/analyze", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ expenses: rows.map(e => ({
+      desc: e.desc, amount: e.amt, category: e.cat, date: e.date
+    })) })
+  });
+  const result = await res.json();
+  renderResults(result);  // your existing render function works as-is
 }
 
 function runLeakDetector(rows){
