@@ -117,7 +117,7 @@ async function analyzeExpenses() {
   if(loader) loader.classList.add('active');
 
   try {
-    const res = await fetch("https://expense-ai-backend.onrender.com/analyze", {
+    const res = await fetch("http://localhost:5000/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
